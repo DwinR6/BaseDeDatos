@@ -1,0 +1,272 @@
+---------------------------------------------------update statement -------------------------------------------------
+UPDATE table_name
+SET column1 = value1,
+    column2 = value2,
+    ...
+WHERE condition
+RETURNING * | output_expression AS output_name;
+
+
+-------------------------------------------------ejemplo de update -------------------------------------------------
+UPDATE users
+SET name = 'John',
+    email = 'jhon@mail.com'
+WHERE id = 1 RETURNING name AS user_name, email as user_email;
+
+
+---------------------------------------------------delete statement -------------------------------------------------
+DELETE FROM table_name
+WHERE condition
+RETURNING * | output_expression AS output_name;
+
+
+---------------------------------------------------select statement -------------------------------------------------
+SELECT * FROM table_name
+WHERE condition 
+ORDER BY column_name
+LIMIT number_of_rows
+OFFSET number_of_rows;
+
+---------------------------------------------------select statement -------------------------------------------------
+SELECT column_name1, column_name2, ...
+FROM table_name
+WHERE condition
+ORDER BY column_name
+LIMIT number_of_rows
+OFFSET number_of_rows;
+
+
+---------------------------------------------------join statement -------------------------------------------------
+SELECT column_name1, column_name2, ...
+FROM table_name1
+INNER JOIN table_name2
+ON table_name1.column_name = table_name2.column_name
+WHERE condition
+ORDER BY column_name
+LIMIT number_of_rows
+OFFSET number_of_rows;
+
+
+---------------------------------------------------join statement -------------------------------------------------
+SELECT column_name1, column_name2, ...
+FROM table_name1
+LEFT JOIN table_name2
+ON table_name1.column_name = table_name2.column_name
+WHERE condition
+ORDER BY column_name
+LIMIT number_of_rows
+OFFSET number_of_rows;
+
+
+---------------------------------------------------join statement -------------------------------------------------
+SELECT column_name1, column_name2, ...
+FROM table_name1
+RIGHT JOIN table_name2
+ON table_name1.column_name = table_name2.column_name
+WHERE condition
+ORDER BY column_name
+LIMIT number_of_rows
+OFFSET number_of_rows;
+
+
+---------------------------------------------------join statement -------------------------------------------------
+SELECT column_name1, column_name2, ...
+FROM table_name1
+FULL JOIN table_name2
+ON table_name1.column_name = table_name2.column_name
+WHERE condition
+ORDER BY column_name
+LIMIT number_of_rows
+OFFSET number_of_rows;
+
+----------------------------------------------------full, left, right, inner join diferencias-------------------------------------------------
+full join: 
+    - selecciona todos los registros de la tabla 1 y 2
+    - si la tabla 1 tiene registros que no estan en la tabla 2, selecciona todos los registros de la tabla 1
+    - si la tabla 2 tiene registros que no estan en la tabla 1, selecciona todos los registros de la tabla 2
+    - si la tabla 1 tiene registros que no estan en la tabla 2, selecciona todos los registros de la tabla 1
+    - si la tabla 2 tiene registros que no estan en la tabla 1, selecciona todos los registros de la tabla 2
+
+left join: 
+    - selecciona todos los registros de la tabla 1 y 2
+    - si la tabla 1 tiene registros que no estan en la tabla 2, selecciona todos los registros de la tabla 1
+    - si la tabla 2 tiene registros que no estan en la tabla 1, no selecciona ningun registro de la tabla 2
+
+right join: 
+    - selecciona todos los registros de la tabla 1 y 2
+    - si la tabla 1 tiene registros que no estan en la tabla 2, no selecciona ningun registro de la tabla 1
+    - si la tabla 2 tiene registros que no estan en la tabla 1, selecciona todos los registros de la tabla 2
+
+inner join: 
+    - selecciona todos los registros de la tabla 1 y 2
+    - si la tabla 1 tiene registros que no estan en la tabla 2, no selecciona ningun registro de la tabla 1
+    - si la tabla 2 tiene registros que no estan en la tabla 1, no selecciona ningun registro de la tabla 2
+
+---------------------------------examples using join-----------------------------------------------------
+SELECT student_name, inscription_date FROM courses
+INNER JOIN students
+ON courses.student_id = students.id
+WHERE courses.id = 1 group by student_name;
+
+----------------------------------------------order resume returning customer, total_order and product_list using joins----------------------------------------------------
+SELECT customers.name, SUM(orders.total_order) AS total_order, GROUP_CONCAT(products.name) AS product_list
+FROM customers
+INNER JOIN orders
+ON customers.id = orders.customer_id
+INNER JOIN order_products
+ON orders.id = order_products.order_id
+INNER JOIN products
+ON order_products.product_id = products.id
+GROUP BY customers.name
+ORDER BY total_order DESC;
+
+
+----------------------------------------------devolver el total de productos por fabricante using left join----------------------------------------------------
+SELECT manufacturers.name, COUNT(products.id) AS total_products
+FROM manufacturers
+LEFT JOIN products
+ON manufacturers.id = products.manufacturer_id
+GROUP BY manufacturers.name
+ORDER BY total_products DESC;
+
+
+----------------------------------------------daily order_detail summary  using left join----------------------------------------------------
+SELECT orders.id, orders.date, customers.name, SUM(order_details.quantity * products.price) AS total_order, GROUP_CONCAT(products.name) AS product_list
+FROM orders
+INNER JOIN customers
+ON orders.customer_id = customers.id
+LEFT JOIN order_details
+ON orders.id = order_details.order_id
+LEFT JOIN products
+ON order_details.product_id = products.id
+GROUP BY orders.id
+ORDER BY orders.date DESC;
+
+
+
+
+
+---------------------------subconsultas usando ANY y ALL-------------------------------------------------
+SELECT column_name1, column_name2, ...
+FROM table_name1
+WHERE column_name1 = ANY (SELECT column_name2 FROM table_name2)
+OR column_name1 = ALL (SELECT column_name2 FROM table_name2);
+
+----------------------------------------------ANY y ALL diferencias-------------------------------------------------
+ANY: 
+    - selecciona todos los registros de la tabla 1
+    - si la tabla 1 tiene registros que no estan en la tabla 2, selecciona todos los registros de la tabla 1
+    - si la tabla 2 tiene registros que no estan en la tabla 1, no selecciona ningun registro de la tabla 2
+    
+ALL:    
+    - selecciona todos los registros de la tabla 1
+    - si la tabla 1 tiene registros que no estan en la tabla 2, no selecciona ningun registro de la tabla 1
+    - si la tabla 2 tiene registros que no estan en la tabla 1, selecciona todos los registros de la tabla 2
+
+
+----------------------------------------------alter table to update on cascade-------------------------------------------------
+ALTER TABLE table_name
+ADD CONSTRAINT constraint_name
+    FOREIGN KEY (column_name)
+    REFERENCES table_name (column_name)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+
+---------------------------------------------precio max, min y medio de los poductos de un fabricante----------------------------------------------------
+SELECT AVG(products.price) AS average_price, MAX(products.price) AS max_price, MIN(products.price) AS min_price 
+FROM products
+WHERE products.manufacturer_id = 1; 
+
+
+
+create table estudiantes (
+    carnet smallserial(10) not null,
+    nombre varchar(30),
+    edad int,
+);
+
+create table materias (
+    codigo_materia smallserial(10) not null,
+    nombre_materia varchar(30),
+);
+
+create table carreras (
+    codigo_carrera smallserial(10) not null,
+    nombre_carrera varchar(30),
+);
+
+create table inscripcion_carrera(
+    carnet smallserial(10) not null,
+    codigo_carrera smallserial(10) not null,
+);
+
+create table inscripcion_materia(
+    carnet smallserial(10) not null,
+    codigo_materia smallserial(10) not null,
+);
+
+select estudiantes.nombre, carreras.nombre_carrera, string_agg(materias.nombre_materia, ', ') as materias 
+from estudiantes 
+inner join inscripcion_carrera 
+on estudiantes.carnet = inscripcion_carrera.carnet
+inner join carreras
+on carreras.codigo_carrera = inscripcion_carrera.codigo_carrera
+inner join inscripcion_materia
+on inscripcion_carrera.carnet = inscripcion_materia.carnet
+inner join materias
+on materias.codigo_materia = inscripcion_materia.codigo_materia
+group by estudiantes.carnet,
+
+
+select * from tabla1 union select * from table2
+
+
+
+select orders.order_id, customers.name, orders.order_date, sum(order_details.quantity * articles.price) as total_order, string_agg(articles.name, ',') as articles_list
+from orders
+inner join customers
+on orders.customer_id = customers.customer_id
+left join order_details
+on orders.order_id = order_details.order_id
+left join articles
+on order_details.article_id = articles.article_id
+group by orders.order_id, customers.name, orders.order_date;
+order by orders.order_id;
+
+------------------------------------------------------explicacion del funcionamiento de join-------------------------------------------------------
+
+select 
+orders.order_id, ----------------- aqui seleccionamos los campos de la tabla orders
+customers.name, ----------------- aqui seleccionamos los campos de la tabla customers
+sum(
+    order_details.quantity * articles.price ---------------------- obtenemos la cantidad de articulos multiplicada por el precio del articulo
+) as total_order, -------------------------al resultado de la funcion sum se le asigna el nombre total_order
+string_agg(x
+    articles.name, ',' -------------------------obtenemos una lista de articulos separados por comas
+) as articles_list -------------------------al resultado de la funcion string_agg se le asigna el nombre articles_list
+
+from orders ------------------------- de la tabla orders obtendremos el order_id y el order_date
+inner join customers ------------------------- la tabla orders tiene una relacion con customers, por lo tanto, obtenemos dicha relacion con inner join
+on orders.customer_id = customers.customer_id --------sabemos que el customer_id de la tabla orders es igual al customer_id de la tabla customers, por lo tanto, obtenemos dicha relacion con inner join
+left join order_details ------------------------- necesitamos el order_id de la tabla order_details, por lo tanto, obtenemos dicha relacion con left join
+on orders.order_id = order_details.order_id ------------------------- sabemos que el order_id de la relacion que se obtuvo en el paso anterior es igual al order_id de la tabla order_details, por lo tanto, obtenemos dicha relacion con left join
+left join articles ------------------------- necesitamos el article_id de la tabla articles, por lo tanto, obtenemos dicha relacion con left join
+on order_details.article_id = articles.article_id ------------------------- sabemos que el article_id de la relacion que se obtuvo en el paso anterior es igual al article_id de la tabla articles, por lo tanto, obtenemos dicha relacion con left join
+group by orders.order_id, customers.name, orders.order_date ------------------------- agrupamos por order_id, name y order_date
+order by orders.order_id; ------------------------- ordenamos por order_id
+
+
+
+----------------------------------bloc named map_bloc to manage google map on flutter using flutter_bloc library------------------------------------------------------
+
+class MapState extends Equatable {
+
+}
+
+
+
+
+
+
+

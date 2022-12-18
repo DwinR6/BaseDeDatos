@@ -1,0 +1,34 @@
+----------math functions---------------
+abs(x) nos da o valor absoluto de x
+ceil(x) nos da o valor inteiro mais proximo de x
+floor(x) nos da o valor inteiro mais proximo de x
+power(x,y) nos da x elevado a y
+round(x) nos da o valor inteiro mais proximo de x
+trunc(x) nos da o valor inteiro mais proximo de x
+sqrt(x) nos da a raiz quadrada de x
+random() nos da um numero aleatorio entre 0 e 1
+
+----------------------------text functions-------------------
+char_length(x) nos da el tamaño de x
+lower(x) nos da x en minusculas
+upper(x) nos da x en mayusculas
+position(x,y) nos da la posicion de x en y
+substring(x,y,z) nos da la subcadena de x desde y hasta z
+trim(x) nos da x sin espacios en blanco
+concat(x,y) nos da la concatenacion de x y y
+left(x,y) nos da la subcadena de x desde el principio hasta y
+right(x,y) nos da la subcadena de x desde y hasta el final
+repeat(x,y) nos da x repetido y veces
+replace(x,y,z) nos da x reemplazando y por z
+reverse(x) nos da x al reves
+
+-------------------datetime functions--------------------
+age(x, y) -> interval cuanto tiempo ha pasado desde x hasta y
+current_date() -> nos da la fecha actual
+current_time() -> nos da la hora actual
+current_timestamp() -> nos da la fecha y hora actual
+now() -> nos da la fecha y hora actual
+extract(x, y) -> nos da el valor de x de y, extract(hour from timestamp '2008-12-31 23:59:59')
+timeofday() -> nos da la hora actual
+
+
